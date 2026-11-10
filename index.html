@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f2f4f9">
+  <meta name="description" content="GarageLog: track vehicles and record maintenance in your browser.">
+  <title>GarageLog | Vehicle Maintenance Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="App navigation">
+      <a class="brand" href="#vehicles" id="brand-link" aria-label="GarageLog home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 13 1.6-5h10.8l1.6 5v5h-2v-2H7v2H5v-5Z"/><path d="M5 13h14M8 11h.01M16 11h.01"/></svg></span>
+        <span><strong>GarageLog</strong><small>Maintenance made simple</small></span>
+      </a>
+      <p class="side-caption">WORKSPACE</p>
+      <nav class="navigation" aria-label="Main menu">
+        <button type="button" class="nav-link active" id="nav-vehicles" data-route="vehicles"><span aria-hidden="true">▦</span> My Vehicles</button>
+        <button type="button" class="nav-link" id="nav-add" data-route="add"><span aria-hidden="true">＋</span> Add Vehicle</button>
+      </nav>
+      <div class="side-bottom">
+        <div class="privacy-card">
+          <span class="privacy-icon" aria-hidden="true">●</span>
+          <strong>Your data, your browser</strong>
+          <p>Information stays on this device in this browser. No account or online connection required.</p>
+        </div>
+        <span class="version">Milestone 1 · v1.0.0</span>
+      </div>
+    </aside>
+    <div class="content-shell">
+      <header class="topbar">
+        <span class="topbar-title">Vehicle Maintenance Tracker</span>
+        <span class="local-pill"><span aria-hidden="true">●</span> Locally saved</span>
+      </header>
+      <main id="main" tabindex="-1">
+        <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+        <section id="view-vehicles" class="view" aria-labelledby="vehicles-heading">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">YOUR GARAGE</p>
+              <h1 id="vehicles-heading">My Vehicles</h1>
+              <p class="subtle">Keep each vehicle's information and service records in one place.</p>
+            </div>
+            <button class="button primary" id="new-vehicle-btn" type="button">+ Add Vehicle</button>
+          </div>
+          <div class="summary-grid" aria-label="Garage summary">
+            <div class="summary-tile"><span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 13 1.6-5h10.8l1.6 5v5h-2v-2H7v2H5v-5Z"/><path d="M5 13h14M8 11h.01M16 11h.01"/></svg></span><div><span>Vehicles</span><strong id="vehicle-count">0</strong><small>Saved in your garage</small></div></div>
+            <div class="summary-tile"><span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3a5 5 0 0 1-6.4 6.4L5 16a2.1 2.1 0 0 0 3 3l6.3-6.3a5 5 0 0 1 6.4-6.4l-3 3-3-3Z"/></svg></span><div><span>Service records</span><strong id="service-count">0</strong><small>Across all vehicles</small></div></div>
+            <div class="summary-tile"><span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0M12 13l4-4M7 17h10"/></svg></span><div><span>Total miles</span><strong id="mileage-total">0</strong><small>Across your vehicles</small></div></div>
+          </div>
+          <div class="section-title">
+            <div><h2>Saved Vehicles</h2><p>Choose a vehicle to see its maintenance history.</p></div>
+            <label class="search-label" for="vehicle-search"><span class="sr-only">Search saved vehicles</span><input id="vehicle-search" type="search" placeholder="Search by year, make or model" autocomplete="off"></label>
+          </div>
+          <div id="vehicle-list" class="vehicle-grid" aria-live="polite"></div>
+          <details class="help-details"><summary>How does GarageLog work?</summary><p>Add a vehicle, select it from your garage, then choose Record Maintenance. You can review information before saving it. Records are kept locally in this browser; clearing browser data can erase them.</p></details>
+        </section>
+
+        <section id="view-add" class="view" hidden aria-labelledby="add-heading">
+          <div class="page-heading compact">
+            <div><p class="eyebrow">MY GARAGE / ADD VEHICLE</p><h1 id="add-heading">Add a Vehicle</h1><p class="subtle">Create a record so you can keep track of future services.</p></div>
+          </div>
+          <div class="form-layout">
+            <div class="panel">
+              <div class="steps" aria-label="Progress"><span class="step current" id="vehicle-step-1">1 <span>Details</span></span><span class="step-connector" aria-hidden="true"></span><span class="step" id="vehicle-step-2">2 <span>Review</span></span></div>
+              <form id="vehicle-form" novalidate>
+                <h2>Vehicle information</h2>
+                <p class="subtle">All four fields are required. This usually takes less than a minute.</p>
+                <div class="form-grid">
+                  <div class="field"><label for="vehicle-year">Year</label><input type="number" id="vehicle-year" name="year" min="1886" max="2100" placeholder="e.g. 2021" required inputmode="numeric"><small>Model year</small></div>
+                  <div class="field"><label for="vehicle-make">Make</label><input type="text" id="vehicle-make" name="make" maxlength="50" placeholder="e.g. Volkswagen" required></div>
+                  <div class="field"><label for="vehicle-model">Model</label><input type="text" id="vehicle-model" name="model" maxlength="50" placeholder="e.g. Tiguan" required></div>
+                  <div class="field"><label for="vehicle-mileage">Current mileage</label><input type="number" id="vehicle-mileage" name="mileage" min="0" max="2000000" placeholder="e.g. 68000" required inputmode="numeric"><small>Miles shown on the odometer</small></div>
+                </div>
+                <p class="error" id="vehicle-error" role="alert" hidden></p>
+                <div class="form-actions"><button type="button" class="button ghost" id="cancel-vehicle">Cancel</button><button type="submit" class="button primary">Review Vehicle →</button></div>
+              </form>
+              <div id="vehicle-review" hidden>
+                <h2>Review Vehicle</h2><p class="subtle">Check everything before saving. Nothing has been saved yet.</p>
+                <dl class="review-list" id="vehicle-review-data"></dl>
+                <div class="form-actions"><button type="button" class="button ghost" id="edit-vehicle">← Edit Details</button><button type="button" class="button primary" id="save-vehicle">Save Vehicle</button></div>
+              </div>
+            </div>
+            <aside class="tip-card"><span class="tip-icon" aria-hidden="true">i</span><h3>Why add a vehicle?</h3><p>Keeping vehicle information in one place helps you organize service records and find them again when you need them.</p><p class="tip-note">No account, payment, or file upload is required.</p></aside>
+          </div>
+        </section>
+
+        <section id="view-detail" class="view" hidden aria-labelledby="detail-heading">
+          <button type="button" class="text-button" id="back-to-vehicles">← All Vehicles</button>
+          <div class="page-heading detail-title">
+            <div><p class="eyebrow">VEHICLE DETAILS</p><h1 id="detail-heading">Vehicle</h1><p class="subtle" id="detail-subtitle"></p></div>
+            <button type="button" class="button primary" id="detail-add-maintenance">+ Record Maintenance</button>
+          </div>
+          <div class="summary-grid detail-stats">
+            <div class="summary-tile"><span>Year</span><strong id="detail-year">—</strong><small>Model year</small></div>
+            <div class="summary-tile"><span>Current mileage</span><strong id="detail-mileage">—</strong><small>Miles</small></div>
+            <div class="summary-tile"><span>Service records</span><strong id="detail-count">0</strong><small>Entries saved</small></div>
+          </div>
+          <div class="section-title"><div><h2>Maintenance history</h2><p>Service entries associated with this vehicle.</p></div></div>
+          <div id="maintenance-list" class="history-list"></div>
+          <details class="help-details"><summary>Where are these records stored?</summary><p>They are saved in this browser's local storage and loaded again when you reopen this site in the same browser. Clearing site data or using private browsing may remove them.</p></details>
+        </section>
+
+        <section id="view-maintenance" class="view" hidden aria-labelledby="maintenance-heading">
+          <div class="page-heading compact"><div><p class="eyebrow">VEHICLE DETAILS / RECORD MAINTENANCE</p><h1 id="maintenance-heading">Record Maintenance</h1><p class="subtle" id="maintenance-vehicle-label">Selected vehicle</p></div></div>
+          <div class="form-layout">
+            <div class="panel">
+              <div class="steps" aria-label="Progress"><span class="step current" id="maintenance-step-1">1 <span>Details</span></span><span class="step-connector" aria-hidden="true"></span><span class="step" id="maintenance-step-2">2 <span>Review</span></span></div>
+              <form id="maintenance-form" novalidate>
+                <h2>Service information</h2><p class="subtle">Date, mileage, and service performed are required.</p>
+                <div class="form-grid">
+                  <div class="field"><label for="maintenance-date">Service date</label><input type="date" name="date" id="maintenance-date" required></div>
+                  <div class="field"><label for="maintenance-mileage">Mileage at service</label><input type="number" name="mileage" id="maintenance-mileage" min="0" max="2000000" required inputmode="numeric" placeholder="e.g. 68000"></div>
+                  <div class="field full"><label for="maintenance-service">Service performed</label><input type="text" name="service" id="maintenance-service" maxlength="120" placeholder="e.g. Oil and filter change" required></div>
+                  <div class="field full"><label for="maintenance-notes">Additional notes <span class="optional">(optional)</span></label><textarea id="maintenance-notes" name="notes" rows="4" maxlength="500" placeholder="e.g. Used 0W-20 synthetic oil"></textarea></div>
+                </div>
+                <p class="error" id="maintenance-error" role="alert" hidden></p>
+                <div class="form-actions"><button type="button" class="button ghost" id="cancel-maintenance">Cancel</button><button type="submit" class="button primary">Review Maintenance →</button></div>
+              </form>
+              <div id="maintenance-review" hidden>
+                <h2>Review Maintenance</h2><p class="subtle">Make sure this is the correct vehicle and service. Nothing has been saved yet.</p>
+                <dl class="review-list" id="maintenance-review-data"></dl>
+                <div class="form-actions"><button type="button" class="button ghost" id="edit-maintenance">← Edit Details</button><button type="button" class="button primary" id="save-maintenance">Save Maintenance</button></div>
+              </div>
+            </div>
+            <aside class="tip-card"><span class="tip-icon" aria-hidden="true">i</span><h3>Why record a service?</h3><p>A dated service history helps you see what work was done on a vehicle and when it happened.</p><p class="tip-note">It takes about one minute. You can go back and make changes before saving.</p></aside>
+          </div>
+        </section>
+      </main>
+      <footer class="footer">
+        <span>GarageLog · Simple vehicle tracking for everyday owners</span>
+        <div class="history-controls" aria-label="Change history"><button type="button" class="link-button" id="undo-btn" disabled title="Undo your last save">↶ Undo</button><button type="button" class="link-button" id="redo-btn" disabled title="Redo the last undone save">↷ Redo</button></div>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
